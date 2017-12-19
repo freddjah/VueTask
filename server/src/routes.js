@@ -11,4 +11,5 @@ module.exports = (app) => {
   app.post('/tasks/add', AuthenticationPolicy, TaskController.store)
   app.patch('/tasks/:id', AuthenticationPolicy, TaskController.edit)
   app.delete('/tasks/:id', AuthenticationPolicy, TaskController.destroy)
+  app.get('/tasks/:id', TaskController.show)
 }

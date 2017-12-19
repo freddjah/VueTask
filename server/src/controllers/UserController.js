@@ -39,6 +39,7 @@ module.exports = {
       const token = createToken(user)
       response.send({
         username: user.username,
+        user_id: user.id,
         token: token
       })
     } catch (error) {
@@ -79,6 +80,7 @@ module.exports = {
         const token = createToken(user)
         response.send({
           username: user.username,
+          user_id: user.id,
           token: token
         })
       }

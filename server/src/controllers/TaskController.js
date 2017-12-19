@@ -22,7 +22,15 @@ module.exports = {
    */
   async store (request, response) {
     try {
+      if (!request.user) {
+        response.status(401).send({
+          message: 'Please login in order to add tasks.'
+        })
+      }
+
       const task = await Task.create(request.body)
+      await task.setUser(request.user.id)
+
       const taskJSON = task.toJSON()
       response.send(taskJSON)
     } catch (error) {
@@ -73,6 +81,21 @@ module.exports = {
     } catch (error) {
       response.status(400).send({
         message: 'Something went wrong while trying to delete the task.'
+      })
+    }
+  },
+
+  async show (request, response) {
+    try {
+      const task = await Task.findById(request.params.id)
+      const taskJSON = task.toJSON()
+
+      response.send({
+        task: taskJSON
+      })
+    } catch (error) {
+      response.status(400).send({
+        message: 'Something went wrong while trying to show the task.'
       })
     }
   }

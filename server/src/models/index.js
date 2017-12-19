@@ -22,6 +22,10 @@ fs.readdirSync(__dirname)
     db[model.name] = model
   })
 
+// Add relations
+db.User.hasMany(db.Task, { foreignKey: 'userId' })
+db.Task.belongsTo(db.User, { foreignKey: 'userId' })
+
 // Add Sequelize class and our own instance.
 db.Sequelize = Sequelize
 db.sequelizeInstance = sequelizeInstance
