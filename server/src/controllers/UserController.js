@@ -37,5 +37,47 @@ module.exports = {
         message: 'Something went wrong while trying to create a new user.'
       })
     }
+  },
+
+  /**
+   * Authenticates the user and returns the user information.
+   * TODO: Implement token to be returned.
+   * @param request
+   * @param response
+   */
+  async authenticate (request, response) {
+    try {
+      const {username, password} = request.body
+      const user = await User.findOne({
+        where: {
+          username: username
+        }
+      })
+
+      if (!user) {
+        response.status(403).send({
+          message: 'The login information was incorrect'
+        })
+      }
+
+      const validPassword = await user.comparePassword(password)
+
+      if (!validPassword) {
+        response.status(403).send({
+          message: 'The login information was incorrect'
+        })
+      } else {
+        const userJSON = user.toJSON()
+        response.send({
+          user: userJSON,
+          authenticated: true
+        })
+      }
+    } catch (error) {
+      response.status(500).send({
+        message: 'An error has occurred while trying to log in.',
+        error: error
+      })
+    }
   }
 }

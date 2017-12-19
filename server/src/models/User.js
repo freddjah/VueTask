@@ -36,7 +36,7 @@ module.exports = (dbConnection, DataTypes) => {
   })
 
   User.prototype.comparePassword = function (submittedPassword) {
-    return bcrypt.comparePassword(submittedPassword, this.password)
+    return bcrypt.compare(submittedPassword, this.password)
   }
 
   return User
