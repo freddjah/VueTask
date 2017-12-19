@@ -24,10 +24,12 @@ module.exports = (dbConnection, DataTypes) => {
   const User = dbConnection.define('User', {
     username: {
       type: DataTypes.STRING,
-      unique: true
+      unique: true,
+      allowNull: false
     },
     password: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     }
   }, {
     hooks: {

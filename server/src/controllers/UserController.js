@@ -1,4 +1,12 @@
 const User = require('../models/index')['User']
+const jwt = require('jsonwebtoken')
+const config = require('../config/config')
+
+function createToken (user) {
+  const userJSON = user.toJSON()
+  const token = jwt.sign(userJSON, config.jwtSecret)
+  return token
+}
 
 module.exports = {
 
@@ -28,9 +36,10 @@ module.exports = {
   async store (request, response) {
     try {
       const user = await User.create(request.body)
-      const userJSON = user.toJSON()
+      const token = createToken(user)
       response.send({
-        user: userJSON
+        username: user.username,
+        token: token
       })
     } catch (error) {
       response.status(400).send({
@@ -67,10 +76,10 @@ module.exports = {
           message: 'The login information was incorrect'
         })
       } else {
-        const userJSON = user.toJSON()
+        const token = createToken(user)
         response.send({
-          user: userJSON,
-          authenticated: true
+          username: user.username,
+          token: token
         })
       }
     } catch (error) {

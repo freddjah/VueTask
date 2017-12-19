@@ -14,6 +14,12 @@ module.exports = {
     }
   },
 
+  /**
+   * Creates a new task and returns it.
+   * TODO: utilize request.user from AuthenticationPolicy middleware to set user of specific task.
+   * @param {*} request
+   * @param {*} response
+   */
   async store (request, response) {
     try {
       const task = await Task.create(request.body)
@@ -26,6 +32,12 @@ module.exports = {
     }
   },
 
+  /**
+   * Edits a task.
+   * TODO: Make sure that it is correct user that is trying to edit task.
+   * @param {*} request
+   * @param {*} response
+   */
   async edit (request, response) {
     try {
       const task = await Task.findById(request.params.id)
@@ -40,6 +52,27 @@ module.exports = {
     } catch (error) {
       response.status(400).send({
         message: 'Something went wrong while trying to edit the task.'
+      })
+    }
+  },
+
+  /**
+   * Deletes a task.
+   * TODO: Make sure that correct user is trying to delete task.
+   * @param {*} request
+   * @param {*} response
+   */
+  async destroy (request, response) {
+    try {
+      const task = await Task.findById(request.params.id)
+      await task.destroy()
+
+      response.send({
+        message: 'Successfully deleted the task'
+      })
+    } catch (error) {
+      response.status(400).send({
+        message: 'Something went wrong while trying to delete the task.'
       })
     }
   }
