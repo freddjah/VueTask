@@ -4,6 +4,7 @@ module.exports = {
   async index (request, response) {
     try {
       const tasks = await Task.findAll({
+        include: ['User'],
         limit: 10
       })
       response.send(tasks)
