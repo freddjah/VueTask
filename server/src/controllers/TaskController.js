@@ -56,13 +56,19 @@ module.exports = {
       try {
         const task = await Task.findById(request.params.id)
 
-        task.text = request.body.text
-        task.isDone = request.body.isDone
+        if (task.userId !== request.user.id) {
+          response.status(401).send({
+            message: 'You cannot edit a task that is not yours.'
+          })
+        } else {
+          task.text = request.body.text
+          task.isDone = request.body.isDone
 
-        await task.save()
+          await task.save()
 
-        const taskJSON = task.toJSON()
-        response.send(taskJSON)
+          const taskJSON = task.toJSON()
+          response.send(taskJSON)
+        }
       } catch (error) {
         response.status(400).send({
           message: 'Something went wrong while trying to edit the task.'
