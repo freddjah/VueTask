@@ -48,20 +48,26 @@ module.exports = {
    * @param {*} response
    */
   async edit (request, response) {
-    try {
-      const task = await Task.findById(request.params.id)
-
-      task.text = request.body.text
-      task.isDone = request.body.isDone
-
-      await task.save()
-
-      const taskJSON = task.toJSON()
-      response.send(taskJSON)
-    } catch (error) {
-      response.status(400).send({
-        message: 'Something went wrong while trying to edit the task.'
+    if (!request.user) {
+      response.status(401).send({
+        message: 'Please login in order to edit tasks.'
       })
+    } else {
+      try {
+        const task = await Task.findById(request.params.id)
+
+        task.text = request.body.text
+        task.isDone = request.body.isDone
+
+        await task.save()
+
+        const taskJSON = task.toJSON()
+        response.send(taskJSON)
+      } catch (error) {
+        response.status(400).send({
+          message: 'Something went wrong while trying to edit the task.'
+        })
+      }
     }
   },
 
