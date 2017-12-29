@@ -15,6 +15,28 @@ module.exports = {
     }
   },
 
+  async tasksSpecificUser (request, response) {
+    try {
+      if (!request.user) {
+        response.status(401).send({
+          message: 'Please login in order to add tasks.'
+        })
+      }
+
+      const tasks = await Task.findAll({
+        where: {
+          userId: request.user.id
+        }
+      })
+
+      response.send(tasks)
+    } catch (error) {
+      response.status(400).send({
+        message: 'Something went wrong while trying to fetch tasks.'
+      })
+    }
+  },
+
   /**
    * Creates a new task and returns it.
    * TODO: utilize request.user from AuthenticationPolicy middleware to set user of specific task.
@@ -48,32 +70,32 @@ module.exports = {
    * @param {*} response
    */
   async edit (request, response) {
-    if (!request.user) {
-      response.status(401).send({
-        message: 'Please login in order to edit tasks.'
-      })
-    } else {
-      try {
-        const task = await Task.findById(request.params.id)
-
-        if (task.userId !== request.user.id) {
-          response.status(401).send({
-            message: 'You cannot edit a task that is not yours.'
-          })
-        } else {
-          task.text = request.body.text
-          task.isDone = request.body.isDone
-
-          await task.save()
-
-          const taskJSON = task.toJSON()
-          response.send(taskJSON)
-        }
-      } catch (error) {
-        response.status(400).send({
-          message: 'Something went wrong while trying to edit the task.'
+    try {
+      if (!request.user) {
+        response.status(401).send({
+          message: 'Please login in order to edit tasks.'
         })
       }
+
+      const task = await Task.findById(request.params.id)
+
+      if (task.userId !== request.user.id) {
+        response.status(401).send({
+          message: 'You cannot edit a task that is not yours.'
+        })
+      }
+
+      task.text = request.body.text
+      task.isDone = request.body.isDone
+
+      await task.save()
+
+      const taskJSON = task.toJSON()
+      response.send(taskJSON)
+    } catch (error) {
+      response.status(400).send({
+        message: 'Something went wrong while trying to edit the task.'
+      })
     }
   },
 
@@ -100,7 +122,20 @@ module.exports = {
 
   async show (request, response) {
     try {
+      if (!request.user) {
+        response.status(401).send({
+          message: 'Please login in order to edit tasks.'
+        })
+      }
+
       const task = await Task.findById(request.params.id)
+
+      if (task.userId !== request.user.id) {
+        response.status(401).send({
+          message: 'You cannot show a task that is not yours.'
+        })
+      }
+
       const taskJSON = task.toJSON()
 
       response.send({

@@ -9,6 +9,7 @@ module.exports = (app) => {
   app.post('/register', UserController.store)
   app.post('/login', UserController.authenticate)
   app.get('/tasks', TaskController.index)
+  app.post('/tasks', AuthenticationPolicy, TaskController.tasksSpecificUser)
   app.post('/tasks/add', [AuthenticationPolicy, TaskValidation], TaskController.store)
   app.patch('/tasks/:id', [AuthenticationPolicy, TaskValidation], TaskController.edit)
   app.delete('/tasks/:id', AuthenticationPolicy, TaskController.destroy)
