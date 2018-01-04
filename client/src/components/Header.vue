@@ -5,7 +5,7 @@
     </v-toolbar-title>
 
     <v-toolbar-items>
-      <v-btn flat dark>
+      <v-btn v-if="$store.state.isUserLoggedIn" flat dark :to="{ name: 'Tasks'}">
         Browse Tasks
       </v-btn>
     </v-toolbar-items>
