@@ -16,7 +16,7 @@ module.exports = {
   },
 
   async tasksSpecificUser (request, response) {
-    console.log(request)
+    console.log(request.user)
     try {
       if (!request.user) {
         response.status(401).send({
