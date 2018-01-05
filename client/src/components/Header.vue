@@ -1,7 +1,7 @@
 <template>
   <v-toolbar fixed class="cyan" dark>
     <v-toolbar-title class="mr-4">
-        <v-btn flat large>VueTasks</v-btn>
+        <v-btn flat large :to="{ name: 'Index'}">VueTasks</v-btn>
     </v-toolbar-title>
 
     <v-toolbar-items>
