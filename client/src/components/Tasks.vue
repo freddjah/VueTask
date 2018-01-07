@@ -4,13 +4,17 @@
       <v-flex class="mb-2 mr-2" xs-4 v-for="task in tasks" :key="task.id">
         <v-card v-bind:class="{'green lighten-4': task.isDone}">
           <v-card-text>
-            <p class="text-xs-center">{{ task.text }}</p>
+            <p v-if="editTaskId !== task.id" class="text-xs-center">{{ task.text }}</p>
+            <v-text-field v-else label="Text" v-model="task.text" required></v-text-field>
           </v-card-text>
-          <v-card-actions row wrap>
-            <v-btn flat>Edit</v-btn>
+          <v-card-actions v-if="editTaskId !== task.id" row wrap>
+            <v-btn flat @click="toggleEdit(task.id)">Edit</v-btn>
             <v-btn flat @click="deleteTask(task)">Delete</v-btn>
             <v-btn v-if="!task.isDone" flat color="green" @click="changeTaskStateIsDone(task)">Complete</v-btn>
             <v-btn v-if="task.isDone" flat color="red" @click="changeTaskStateIsDone(task)">Uncomplete</v-btn>
+          </v-card-actions>
+          <v-card-actions v-else row wrap>
+            <v-btn flat color="green" @click="saveTask(task)">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -23,7 +27,8 @@ import TaskService from '@/services/TaskService'
 export default {
   data () {
     return {
-      tasks: null
+      tasks: null,
+      editTaskId: null
     }
   },
   async mounted () {
@@ -60,6 +65,13 @@ export default {
       let credentials = {token: this.$store.state.token}
       await TaskService.deleteTask(task.id, credentials)
       removeFromData(task.id, this.tasks)
+    },
+    toggleEdit (taskId) {
+      if (this.editTaskId === taskId) this.editTaskId = null
+      else this.editTaskId = taskId
+    },
+    saveTask (task) {
+      this.editTaskId = null
     }
   }
 }
