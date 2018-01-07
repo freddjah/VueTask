@@ -8,7 +8,7 @@
           </v-card-text>
           <v-card-actions row wrap>
             <v-btn flat>Edit</v-btn>
-            <v-btn flat>Delete</v-btn>
+            <v-btn flat @click="deleteTask(task)">Delete</v-btn>
             <v-btn v-if="!task.isDone" flat color="green" @click="changeTaskStateIsDone(task)">Complete</v-btn>
             <v-btn v-if="task.isDone" flat color="red" @click="changeTaskStateIsDone(task)">Uncomplete</v-btn>
           </v-card-actions>
@@ -28,10 +28,8 @@ export default {
   },
   async mounted () {
     // If user is logged in, fetch tasks created by that user. Otherwise, redirect to login page.
-    if (this.$store.state.token) {
-      let credentials = {token: this.$store.state.token}
-      this.tasks = (await TaskService.getTasks(credentials)).data
-    } else this.$router.push({ name: 'Login' })
+    if (this.$store.state.token) this.loadTasks()
+    else this.$router.push({ name: 'Login' })
   },
   methods: {
     async changeTaskStateIsDone (task) {
@@ -47,8 +45,21 @@ export default {
         let updatedTask = (await TaskService.editTask(task.id, information)).data
         task = updatedTask
       } catch (error) {
-        console.log(error)
       }
+    },
+    async loadTasks () {
+      let credentials = {token: this.$store.state.token}
+      this.tasks = (await TaskService.getTasks(credentials)).data
+    },
+    async deleteTask (task) {
+      function removeFromData (taskId, tasks) {
+        let indexOfTask = tasks.map(item => item.id).indexOf(taskId)
+        tasks.splice(indexOfTask, 1)
+      }
+
+      let credentials = {token: this.$store.state.token}
+      await TaskService.deleteTask(task.id, credentials)
+      removeFromData(task.id, this.tasks)
     }
   }
 }

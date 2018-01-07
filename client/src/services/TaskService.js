@@ -6,5 +6,8 @@ export default {
   },
   editTask (taskId, information) {
     return Api().patch(`tasks/${taskId}/`, information)
+  },
+  deleteTask (taskId, credentials) {
+    return Api().delete(`tasks/${taskId}/`, credentials)
   }
 }
