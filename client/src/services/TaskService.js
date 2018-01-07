@@ -9,5 +9,8 @@ export default {
   },
   deleteTask (taskId, credentials) {
     return Api().delete(`tasks/${taskId}/`, credentials)
+  },
+  addTask (information) {
+    return Api().post('/tasks/add/', information)
   }
 }

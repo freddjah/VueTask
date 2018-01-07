@@ -6,11 +6,11 @@
       <v-flex v-if="showAddTaskForm" class="mb-2 mr-2" xs-4>
         <v-card class="yellow lighten-4">
           <v-card-text>
-            <v-text-field label="Text" v-model="newTask.text" required></v-text-field>
+            <v-text-field label="Text" v-model="newTaskText" required></v-text-field>
           </v-card-text>
 
           <v-card-actions>
-            <v-btn flat color="green" @click="addTask(newTask)">Save</v-btn>
+            <v-btn flat color="green" @click="addTask(newTaskText)">Save</v-btn>
             <v-btn flat @click="toggleAddTaskForm()">Delete</v-btn>
           </v-card-actions>
         </v-card>
@@ -55,7 +55,7 @@ export default {
   data () {
     return {
       tasks: null,
-      newTask: {text: ''},
+      newTaskText: '',
       editTaskId: null,
       showAddTaskForm: false
     }
@@ -95,7 +95,21 @@ export default {
       } catch (error) {
       }
     },
-    async addTask () {},
+    async addTask () {
+      let information = {
+        text: this.newTaskText,
+        token: this.$store.state.token
+      }
+
+      try {
+        let task = (await TaskService.addTask(information)).data
+        this.tasks.push(task)
+      } catch (error) {
+      }
+
+      this.showAddTaskForm = false
+      this.newTaskText = ''
+    },
     async changeTaskStateIsDone (task) {
       task.isDone = !task.isDone
 
