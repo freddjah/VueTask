@@ -16,10 +16,12 @@ module.exports = {
   },
 
   async tasksSpecificUser (request, response) {
+    console.log(request.user)
     try {
       if (!request.user) {
         response.status(401).send({
-          message: 'Please login in order to add tasks.'
+          message: 'Please login in order to view your tasks.',
+          request: request
         })
       }
 

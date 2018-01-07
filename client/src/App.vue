@@ -1,17 +1,23 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
+    <v-app>
+      <page-header />
+      
+      <main>
+        <v-container fluid>
+          <router-view></router-view>
+        </v-container>
+      </main>
+    </v-app>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
-
+import PageHeader from '@/components/Header.vue'
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    PageHeader
   }
 }
 </script>
@@ -24,5 +30,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.danger-alert {
+  color: red;
 }
 </style>
